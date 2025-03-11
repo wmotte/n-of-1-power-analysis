@@ -243,6 +243,45 @@
                 font-size: 14px;
             }
         }
+        
+        .toggle-button {
+            display: inline-block; /* Prevents full-width expansion */
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 10px;
+            text-align: center;
+            width: auto; /* Ensures button does not expand */
+            min-width: 150px; /* Prevents excessive shrinking */
+        }
+
+        .toggle-button:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .divider {
+            width: 100%;
+            height: 2px;
+            background-color: var(--border-color);
+            margin: 20px 0;
+        }
+
+        .button-container {
+            text-align: center;
+            grid-column: 1 / -1;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -260,7 +299,7 @@
             <h2 class="card-header">Select Trial Parameters (based on n=10)</h2>
             <div class="dropdowns">
                 <div class="dropdown-group">
-                    <label class="dropdown-label" for="baseline">Baseline Seizure Frequency (per week)</label>
+                    <label class="dropdown-label" for="baseline">Baseline Seizure Freq. (per week)</label>
                     <select id="baseline"></select>
                 </div>
                 <div class="dropdown-group">
@@ -557,28 +596,6 @@
                 </div>
             `;
             
-            // Bayes Factors
-            html += `<div class="category-title">Bayes Factors</div>`;
-            
-            const bayesFactors = [
-                { title: 'Above 1 (Anecdotal Evidence)', key: 'out__BayesFactor_above1' },
-                { title: 'Above 2 (Weak Evidence)', key: 'out__BayesFactor_above2' },
-                { title: 'Above 3 (Moderate Evidence)', key: 'out__BayesFactor_above3' },
-                { title: 'Above 10 (Strong Evidence)', key: 'out__BayesFactor_above10' }
-            ];
-            
-            bayesFactors.forEach(factor => {
-                html += `
-                    <div class="result-card">
-                        <div class="result-title">${factor.title}</div>
-                        <div class="result-value">${data[factor.key]}%</div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: ${data[factor.key]}%; background-color: ${getColorForValue(data[factor.key])}"></div>
-                        </div>
-                    </div>
-                `;
-            });
-            
             // Certainty Distribution
             html += `<div class="category-title">Certainty Distribution</div>`;
             
@@ -604,8 +621,44 @@
                 `;
             });
             
+            // Add the button container with proper layout
+            html += `
+                <div class="button-container">
+                    <div class="divider"></div>
+                    <button id="toggle-button" class="toggle-button" onclick="toggleDetails()">More details</button>
+                </div>
+            `;
+            
+            // Details section (initially hidden)
+            html += `<div id="details-section" class="hidden" style="grid-column: 1 / -1; width: 100%;">`;
+            
+            // Create a grid container for the detailed results to ensure they appear side by side
+            html += `<div class="details-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">`;
+            
+            // Bayes Factors
+            html += `<div class="category-title" style="grid-column: 1 / -1;">Bayes Factors</div>`;
+            
+            const bayesFactors = [
+                { title: 'Above 1 (Anecdotal Evidence)', key: 'out__BayesFactor_above1' },
+                { title: 'Above 2 (Weak Evidence)', key: 'out__BayesFactor_above2' },
+                { title: 'Above 3 (Moderate Evidence)', key: 'out__BayesFactor_above3' },
+                { title: 'Above 10 (Strong Evidence)', key: 'out__BayesFactor_above10' }
+            ];
+            
+            bayesFactors.forEach(factor => {
+                html += `
+                    <div class="result-card">
+                        <div class="result-title">${factor.title}</div>
+                        <div class="result-value">${data[factor.key]}%</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: ${data[factor.key]}%; background-color: ${getColorForValue(data[factor.key])}"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
             // Certainty Thresholds
-            html += `<div class="category-title">Certainty Thresholds</div>`;
+            html += `<div class="category-title" style="grid-column: 1 / -1;">Certainty Thresholds</div>`;
             
             const certaintyThresholds = [
                 { title: 'Certainty > 30%', key: 'out__Certainty_above30_perc' },
@@ -627,6 +680,9 @@
                 `;
             });
             
+            // Close the grid and details section divs
+            html += `</div></div>`;
+            
             resultsContainer.innerHTML = html;
         }
         
@@ -636,6 +692,19 @@
             if (value >= 50) return '#3498db'; // Blue (good)
             if (value >= 30) return '#f39c12'; // Orange (warning)
             return '#e74c3c'; // Red (danger)
+        }
+        
+        // Function to toggle details visibility
+        function toggleDetails() {
+            const details = document.getElementById("details-section");
+            const button = document.getElementById("toggle-button");
+            if (details.classList.contains("hidden")) {
+                details.classList.remove("hidden");
+                button.textContent = "Hide details";
+            } else {
+                details.classList.add("hidden");
+                button.textContent = "More details";
+            }
         }
         
         // Initialize the app
@@ -664,5 +733,6 @@
                 `;
             }
         });
-        
-</script>
+    </script>
+</body>
+</html>
