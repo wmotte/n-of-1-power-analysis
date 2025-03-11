@@ -580,7 +580,7 @@
             
             html += `
                 <div class="result-card">
-                    <div class="result-title">Percentage Significant (p < 0.05)</div>
+                    <div class="result-title">Significant (p < 0.05)</div>
                     <div class="result-value">${data.out__percentage_significant}%</div>
                     <div class="progress-bar">
                         <div class="progress" style="width: ${data.out__percentage_significant}%; background-color: ${getColorForValue(data.out__percentage_significant)}"></div>
@@ -612,9 +612,9 @@
                         <div class="result-value">${data[cert.key]}%</div>
                         <div class="progress-bar">
                             <div class="progress" style="width: ${data[cert.key]}%; background-color: ${
-                                cert.key === 'out__Certainty_above80_perc' ? getColorForValue(data[cert.key]) :
-                                cert.key === 'out__Certainty_20to80_perc' ? '#f39c12' : 
-                                '#e74c3c'
+                                cert.key === 'out__Certainty_above80_perc' ? '#7f7f7f' : // getColorForValue(data[cert.key]) :
+                                cert.key === 'out__Certainty_20to80_perc' ? '#7f7f7f' : //'#f39c12' : 
+                                '#7f7f7f' // red ...
                             }"></div>
                         </div>
                     </div>
