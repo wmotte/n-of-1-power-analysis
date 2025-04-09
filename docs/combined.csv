@@ -1,4 +1,4 @@
-stratum,ncycle,SF,Placebo,totaal,p_sign,RR_freq_30,BF_above3,Cert30_under20,Cert30_above80,Cert50_under20,Cert50_above80
+stratum,ncycle,SF,placebo,totaal,p_sign,RR_freq_30,BF_above3,Cert30_under20,Cert30_above80,Cert50_under20,Cert50_above80
 0,1,1,10,10,10,10,10,50,10,70,0
 0,2,1,10,10,10,30,10,30,10,70,10
 0,3,1,10,10,10,20,0,40,0,70,0
