@@ -335,7 +335,7 @@
         function loadData() {
             try {
                 // For GitHub Pages, the data is directly included in the code (Wim)
-                const csvString = `stratum,ncycle,SF,placebo,totaal,p_sign,RR_freq_30,BF_above3,Cert30_under20,Cert30_above80,Cert50_under20,Cert50_above80
+                const csvString = `verum,ncycle,SF,placebo,totaal,p_sign,RR_freq_30,BF_above3,Cert30_under20,Cert30_above80,Cert50_under20,Cert50_above80
 0,1,1,10,10,10,10,10,50,10,70,0					
 0,2,1,10,10,10,30,10,30,10,70,10					
 0,3,1,10,10,10,20,0,40,0,70,0					
@@ -592,13 +592,13 @@
                     label: (val) => `${val}%`
                 },
                 'verum': {
-                    element: document.getElementById('stratum'),
+                    element: document.getElementById('verum'),
                     column: 'verum',
                     label: (val) => `${val}%`
                 },
                 'ncycle': {
                     element: document.getElementById('ncycle'),
-                    column: 'in__trial_ncycle',
+                    column: 'ncycle',
                     label: (val) => `${val} ${val === 1 ? 'cycle' : 'cycles'}`
                 }
             };
@@ -621,14 +621,14 @@
         function findMatchingData() {
             const baseline = parseInt(document.getElementById('baseline').value);
             const placebo = parseInt(document.getElementById('placebo').value);
-            const verum = parseInt(document.getElementById('stratum').value);
+            const verum = parseInt(document.getElementById('verum').value);
             const ncycle = parseInt(document.getElementById('ncycle').value);
             
             return csvData.find(row => 
                 row.SF === baseline &&
                 row.placebo === placebo &&
-                row.verum === stratum &&
-                row.in__trial_ncycle === ncycle
+                row.verum === verum &&
+                row.ncycle === ncycle
             );
         }
         
@@ -655,7 +655,7 @@
                     <div class="result-title">Significant (p < 0.05)</div>
                     <div class="result-value">${data.out__p_sign}%</div>
                     <div class="progress-bar">
-                        <div class="progress" style="width: ${data.out__p_sign}%; background-color: ${getColorForValue(data.out__pe_sign)}"></div>
+                        <div class="progress" style="width: ${data.out__p_sign}%; background-color: ${getColorForValue(data.out__p_sign)}"></div>
                     </div>
                 </div>
                 
@@ -683,7 +683,7 @@
                         <div class="result-value">${data[cert.key]}%</div>
                         <div class="progress-bar">
                             <div class="progress" style="width: ${data[cert.key]}%; background-color: ${
-                                cert.key === 'out__Cer30_above80' ? '#7f7f7f' : // getColorForValue(data[cert.key]) :
+                                cert.key === 'out__Cert30_above80' ? '#7f7f7f' : // getColorForValue(data[cert.key]) :
                                 '#7f7f7f' // red ...
                             }"></div>
                         </div>
