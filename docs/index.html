@@ -625,9 +625,9 @@
             const ncycle = parseInt(document.getElementById('ncycle').value);
             
             return csvData.find(row => 
-                row.in__baseline_seizure_freq_per_week === baseline &&
-                row.in__placebo_effect === placebo &&
-                row.in__verum_effect === stratum &&
+                row.SF === baseline &&
+                row.placebo === placebo &&
+                row.verum === stratum &&
                 row.in__trial_ncycle === ncycle
             );
         }
@@ -653,17 +653,17 @@
             html += `
                 <div class="result-card">
                     <div class="result-title">Significant (p < 0.05)</div>
-                    <div class="result-value">${data.out__percentage_significant}%</div>
+                    <div class="result-value">${data.out__p_sign}%</div>
                     <div class="progress-bar">
-                        <div class="progress" style="width: ${data.out__percentage_significant}%; background-color: ${getColorForValue(data.out__percentage_significant)}"></div>
+                        <div class="progress" style="width: ${data.out__p_sign}%; background-color: ${getColorForValue(data.out__pe_sign)}"></div>
                     </div>
                 </div>
                 
                 <div class="result-card">
                     <div class="result-title">Reaches 30% Seizure Reduction</div>
-                    <div class="result-value">${data.out__relative_risk_reached_30perc_seizure_reduction}%</div>
+                    <div class="result-value">${data.out__RR_freq_30}%</div>
                     <div class="progress-bar">
-                        <div class="progress" style="width: ${data.out__relative_risk_reached_30perc_seizure_reduction}%; background-color: ${getColorForValue(data.out__relative_risk_reached_30perc_seizure_reduction)}"></div>
+                        <div class="progress" style="width: ${data.out__RR_freq_30}%; background-color: ${getColorForValue(data.out__RR_freq_30)}"></div>
                     </div>
                 </div>
             `;
@@ -672,9 +672,8 @@
             html += `<div class="category-title">Certainty Distribution (30% Seizure Reduction)</div>`;
             
             const certaintyDistribution = [
-                { title: 'Certainty < 20%', key: 'out__Certainty_under20_perc' },
-                { title: 'Certainty 20% - 80%', key: 'out__Certainty_20to80_perc' },
-                { title: 'Certainty > 80%', key: 'out__Certainty_above80_perc' }
+                { title: 'Certainty < 20%', key: 'out__Cert30_under20' },
+                { title: 'Certainty > 80%', key: 'out__Cert30_above80' }
             ];
             
             certaintyDistribution.forEach(cert => {
@@ -684,8 +683,7 @@
                         <div class="result-value">${data[cert.key]}%</div>
                         <div class="progress-bar">
                             <div class="progress" style="width: ${data[cert.key]}%; background-color: ${
-                                cert.key === 'out__Certainty_above80_perc' ? '#7f7f7f' : // getColorForValue(data[cert.key]) :
-                                cert.key === 'out__Certainty_20to80_perc' ? '#7f7f7f' : //'#f39c12' : 
+                                cert.key === 'out__Cer30_above80' ? '#7f7f7f' : // getColorForValue(data[cert.key]) :
                                 '#7f7f7f' // red ...
                             }"></div>
                         </div>
@@ -711,10 +709,7 @@
             html += `<div class="category-title" style="grid-column: 1 / -1;">Bayes Factors</div>`;
             
             const bayesFactors = [
-                { title: 'Above 1 (Anecdotal Evidence)', key: 'out__BayesFactor_above1' },
-                { title: 'Above 2 (Weak Evidence)', key: 'out__BayesFactor_above2' },
-                { title: 'Above 3 (Moderate Evidence)', key: 'out__BayesFactor_above3' },
-                { title: 'Above 10 (Strong Evidence)', key: 'out__BayesFactor_above10' }
+                { title: 'Above 3 (Moderate Evidence)', key: 'out__BF_above3' },
             ];
             
             bayesFactors.forEach(factor => {
@@ -732,13 +727,6 @@
             // Certainty Thresholds
             html += `<div class="category-title" style="grid-column: 1 / -1;">Certainty Thresholds</div>`;
             
-            const certaintyThresholds = [
-                { title: 'Certainty > 30%', key: 'out__Certainty_above30_perc' },
-                { title: 'Certainty > 40%', key: 'out__Certainty_above40_perc' },
-                { title: 'Certainty > 50%', key: 'out__Certainty_above50_perc' },
-                { title: 'Certainty > 60%', key: 'out__Certainty_above60_perc' },
-                { title: 'Certainty > 70%', key: 'out__Certainty_above70_perc' }
-            ];
             
             certaintyThresholds.forEach(threshold => {
                 html += `
