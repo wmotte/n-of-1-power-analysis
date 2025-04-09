@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -335,7 +336,7 @@
         function loadData() {
             try {
                 // For GitHub Pages, the data is directly included in the code (Wim)
-                const csvString = `verum,ncycle,SF,placebo,totaal,p_sign,RR_freq_30,BF_above3,Cert30_under20,Cert30_above80,Cert50_under20,Cert50_above80
+                const csvString = `in_verum_effect,in_trial_ncycle,SF,in_placebo_effect,totaal,out__percentage_significant,out__relative_risk_reached_30perc_seizure_reduction,out__BayesFactor_above3,out__Certainty30_under20_perc,out__Certainty30_above80_perc,out__Certainty50_under20_perc,out__Certainty50_above80_perc
 0,1,1,10,10,10,10,10,50,10,70,0					
 0,2,1,10,10,10,30,10,30,10,70,10					
 0,3,1,10,10,10,20,0,40,0,70,0					
@@ -583,22 +584,22 @@
             const dropdowns = {
                 'baseline': {
                     element: document.getElementById('baseline'),
-                    column: 'SF',
+                    column: 'in__baseline_seizure_freq_per_week',
                     label: (val) => `${val} seizures per week`
                 },
                 'placebo': {
                     element: document.getElementById('placebo'),
-                    column: 'placebo',
+                    column: 'in__placebo_effect',
                     label: (val) => `${val}%`
                 },
                 'verum': {
                     element: document.getElementById('verum'),
-                    column: 'verum',
+                    column: 'in__verum_effect',
                     label: (val) => `${val}%`
                 },
                 'ncycle': {
                     element: document.getElementById('ncycle'),
-                    column: 'ncycle',
+                    column: 'in__trial_ncycle',
                     label: (val) => `${val} ${val === 1 ? 'cycle' : 'cycles'}`
                 }
             };
@@ -625,10 +626,10 @@
             const ncycle = parseInt(document.getElementById('ncycle').value);
             
             return csvData.find(row => 
-                row.SF === baseline &&
-                row.placebo === placebo &&
-                row.verum === verum &&
-                row.ncycle === ncycle
+                row.in__baseline_seizure_freq_per_week === baseline &&
+                row.in__placebo_effect === placebo &&
+                row.in__verum_effect === verum &&
+                row.in__trial_ncycle === ncycle
             );
         }
         
@@ -653,17 +654,17 @@
             html += `
                 <div class="result-card">
                     <div class="result-title">Significant (p < 0.05)</div>
-                    <div class="result-value">${data.out__p_sign}%</div>
+                    <div class="result-value">${data.out__percentage_significant}%</div>
                     <div class="progress-bar">
-                        <div class="progress" style="width: ${data.out__p_sign}%; background-color: ${getColorForValue(data.out__p_sign)}"></div>
+                        <div class="progress" style="width: ${data.out__percentage_significant}%; background-color: ${getColorForValue(data.out__percentage_significant)}"></div>
                     </div>
                 </div>
                 
                 <div class="result-card">
                     <div class="result-title">Reaches 30% Seizure Reduction</div>
-                    <div class="result-value">${data.out__RR_freq_30}%</div>
+                    <div class="result-value">${data.out__relative_risk_reached_30perc_seizure_reduction}%</div>
                     <div class="progress-bar">
-                        <div class="progress" style="width: ${data.out__RR_freq_30}%; background-color: ${getColorForValue(data.out__RR_freq_30)}"></div>
+                        <div class="progress" style="width: ${data.out__relative_risk_reached_30perc_seizure_reduction}%; background-color: ${getColorForValue(data.out__relative_risk_reached_30perc_seizure_reduction)}"></div>
                     </div>
                 </div>
             `;
@@ -672,8 +673,9 @@
             html += `<div class="category-title">Certainty Distribution (30% Seizure Reduction)</div>`;
             
             const certaintyDistribution = [
-                { title: 'Certainty < 20%', key: 'out__Cert30_under20' },
-                { title: 'Certainty > 80%', key: 'out__Cert30_above80' }
+                { title: 'Certainty < 20%', key: 'out__Certainty_under20_perc' },
+                { title: 'Certainty 20% - 80%', key: 'out__Certainty_20to80_perc' },
+                { title: 'Certainty > 80%', key: 'out__Certainty_above80_perc' }
             ];
             
             certaintyDistribution.forEach(cert => {
@@ -683,7 +685,8 @@
                         <div class="result-value">${data[cert.key]}%</div>
                         <div class="progress-bar">
                             <div class="progress" style="width: ${data[cert.key]}%; background-color: ${
-                                cert.key === 'out__Cert30_above80' ? '#7f7f7f' : // getColorForValue(data[cert.key]) :
+                                cert.key === 'out__Certainty_above80_perc' ? '#7f7f7f' : // getColorForValue(data[cert.key]) :
+                                cert.key === 'out__Certainty_20to80_perc' ? '#7f7f7f' : //'#f39c12' : 
                                 '#7f7f7f' // red ...
                             }"></div>
                         </div>
@@ -709,7 +712,10 @@
             html += `<div class="category-title" style="grid-column: 1 / -1;">Bayes Factors</div>`;
             
             const bayesFactors = [
-                { title: 'Above 3 (Moderate Evidence)', key: 'out__BF_above3' },
+                { title: 'Above 1 (Anecdotal Evidence)', key: 'out__BayesFactor_above1' },
+                { title: 'Above 2 (Weak Evidence)', key: 'out__BayesFactor_above2' },
+                { title: 'Above 3 (Moderate Evidence)', key: 'out__BayesFactor_above3' },
+                { title: 'Above 10 (Strong Evidence)', key: 'out__BayesFactor_above10' }
             ];
             
             bayesFactors.forEach(factor => {
@@ -727,6 +733,13 @@
             // Certainty Thresholds
             html += `<div class="category-title" style="grid-column: 1 / -1;">Certainty Thresholds</div>`;
             
+            const certaintyThresholds = [
+                { title: 'Certainty > 30%', key: 'out__Certainty_above30_perc' },
+                { title: 'Certainty > 40%', key: 'out__Certainty_above40_perc' },
+                { title: 'Certainty > 50%', key: 'out__Certainty_above50_perc' },
+                { title: 'Certainty > 60%', key: 'out__Certainty_above60_perc' },
+                { title: 'Certainty > 70%', key: 'out__Certainty_above70_perc' }
+            ];
             
             certaintyThresholds.forEach(threshold => {
                 html += `
@@ -796,3 +809,4 @@
     </script>
 </body>
 </html>
+
